@@ -1,8 +1,13 @@
+import React from 'react';
+import {Header} from './components/Header/Header';
+import {Main} from './components/Main/Main';
+
 function App() {
   return (
-    <header className="App-header">
-      <p>Hello React</p>
-    </header>
+    <React.Fragment>
+      <Header />
+      <Main />
+    </React.Fragment>
   );
 }
 
