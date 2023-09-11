@@ -1,6 +1,6 @@
 import style from './Auth.module.css';
+import PropTypes from 'prop-types';
 
-// eslint-disable-next-line react/prop-types
 export const Auth = ({auth}) => (
   <button className={style.button}>
     {auth ? (
@@ -45,3 +45,7 @@ export const Auth = ({auth}) => (
     )}
   </button>
 );
+
+Auth.propTypes = {
+  auth: PropTypes.string,
+};
