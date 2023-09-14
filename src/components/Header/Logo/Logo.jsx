@@ -1,8 +1,9 @@
+import {SVG} from '../../../UI/SVG/SVG';
 import style from './Logo.module.css';
-import logo from './img/logo.svg';
+import path from './img/logo.svg';
 
 export const Logo = () => (
   <a href="/" className={style.link}>
-    <img className={style.img} src={logo} alt="Логотип Blogger" />
+    <SVG path={path} id='logo' width={128} height={128}/>
   </a>
 );
