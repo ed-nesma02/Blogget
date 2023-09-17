@@ -7,14 +7,14 @@ import {Date} from './Date/Date';
 import {Delete} from './Delete/Delete';
 
 export const Post = ({postData}) => {
-  const {title, author, ups, date} = postData;
+  const {thumbnail, title, author, ups, created} = postData;
 
   return (
     <li className={style.post}>
-      <Photo title={title} />
+      <Photo title={title} thumbnail={thumbnail}/>
       <Content title={title} author={author} />
       <Rating ups={ups} />
-      <Date date={date} />
+      <Date date={created} />
       <Delete />
     </li>
   );
