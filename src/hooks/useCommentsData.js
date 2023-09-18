@@ -23,7 +23,6 @@ export const useCommentsData = (id) => {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
         setDataPost(data[0]?.data.children[0]?.data);
         setComments(data[1]?.data.children);
       })
