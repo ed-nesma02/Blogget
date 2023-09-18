@@ -14,7 +14,8 @@ export const Text = (prop) => {
     href,
     center,
     bold,
-    medium
+    medium,
+    onClick,
   } = prop;
 
   const classes = classNames(
@@ -28,7 +29,7 @@ export const Text = (prop) => {
     {[style[`fsd${dsize}`]]: dsize}
   );
 
-  return <As className={classes} href={href}>{children}</As>;
+  return <As className={classes} href={href} onClick={onClick}>{children}</As>;
 };
 
 Text.propTypes = {
@@ -48,4 +49,5 @@ Text.propTypes = {
   center: PropTypes.bool,
   bold: PropTypes.bool,
   medium: PropTypes.bool,
+  onClick: PropTypes.func,
 };
