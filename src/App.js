@@ -1,18 +1,18 @@
 import React from 'react';
-import {Provider} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {Header} from './components/Header/Header';
 import {Main} from './components/Main/Main';
-import {AuthContextProvider} from './context/authContext';
-import {store} from './store';
+import {updateToken} from './store/tokenReducer';
+import {getToken} from './api/token';
 
 function App() {
+  const dispath = useDispatch();
+  dispath(updateToken(getToken()));
   return (
-    <Provider store={store}>
-      <AuthContextProvider>
-        <Header />
-        <Main />
-      </AuthContextProvider>
-    </Provider>
+    <>
+      <Header />
+      <Main />
+    </>
   );
 }
 

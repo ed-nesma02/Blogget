@@ -8,10 +8,13 @@ import {useCommentsData} from '../../hooks/useCommentsData';
 import {Comments} from './Comments/Comments';
 import {Text} from '../../UI/Text';
 import {FormComment} from './FormComment/FormComment';
+import {useSelector} from 'react-redux';
+import {PuffPreloader} from '../../UI/PuffPreloader/PuffPreloader';
 
 export const Modal = ({id, closeModal}) => {
   const overlayRef = useRef(null);
   const [dataPost, comments] = useCommentsData(id);
+  const status = useSelector((state) => state.commentsData.status);
 
   const handleClick = (e) => {
     const target = e.target;
@@ -33,7 +36,9 @@ export const Modal = ({id, closeModal}) => {
   return ReactDOM.createPortal(
     <div className={style.overlay} ref={overlayRef}>
       <div className={style.modal}>
-        {Object.keys(dataPost).length ? (
+        {status === 'loading' && <PuffPreloader />}
+        {status === 'error' && <p>Ошибка</p>}
+        {status === 'loaded' && (
           <>
             <h2 className={style.title}>{dataPost?.title}</h2>
 
@@ -71,8 +76,6 @@ export const Modal = ({id, closeModal}) => {
               <CloseIcon />
             </button>
           </>
-        ) : (
-          <Text As="p">Загрузка...</Text>
         )}
       </div>
     </div>,

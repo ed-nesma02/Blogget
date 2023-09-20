@@ -2,19 +2,30 @@ import style from './Auth.module.css';
 import {ReactComponent as LoginIcon} from './img/login.svg';
 import {urlAuth} from '../../../api/auth';
 import {Text} from '../../../UI/Text/Text';
-import {useContext, useState} from 'react';
-import {authContext} from '../../../context/authContext';
+import {useState} from 'react';
+import {useAuth} from '../../../hooks/useAuth';
+import {PuffPreloader} from '../../../UI/PuffPreloader/PuffPreloader';
+import {Notification} from '../../Notification/Notification';
 
 export const Auth = () => {
   const [logout, setLogout] = useState(false);
-  const {auth, unAuth} = useContext(authContext);
+  const [auth, status, unAuth] = useAuth();
   const changeLogout = () => {
     setLogout(!logout);
   };
 
   return (
     <div className={style.container}>
-      {auth.name ? (
+      {status === 'loading' && <PuffPreloader />}
+      {(status === 'idle' || status === 'error') && (
+        <>
+          {status === 'error' && <Notification />}
+          <Text As="a" href={urlAuth}>
+            <LoginIcon className={style.svg} />
+          </Text>
+        </>
+      )}
+      {status === 'loaded' && (
         <>
           <button className={style.btn} onClick={changeLogout}>
             <img
@@ -30,10 +41,6 @@ export const Auth = () => {
             </button>
           )}
         </>
-      ) : (
-        <Text As="a" href={urlAuth}>
-          <LoginIcon className={style.svg} />
-        </Text>
       )}
     </div>
   );
