@@ -1,6 +1,5 @@
 import style from './Modal.module.css';
 import {ReactComponent as CloseIcon} from './img/close.svg';
-import PropTypes from 'prop-types';
 import Markdown from 'markdown-to-jsx';
 import ReactDOM from 'react-dom';
 import {useEffect, useRef} from 'react';
@@ -10,8 +9,11 @@ import {Text} from '../../UI/Text';
 import {FormComment} from './FormComment/FormComment';
 import {useSelector} from 'react-redux';
 import {PuffPreloader} from '../../UI/PuffPreloader/PuffPreloader';
+import {useNavigate, useParams} from 'react-router-dom';
 
-export const Modal = ({id, closeModal}) => {
+export const Modal = () => {
+  const {id, page} = useParams();
+  const navigate = useNavigate();
   const overlayRef = useRef(null);
   const [dataPost, comments] = useCommentsData(id);
   const status = useSelector((state) => state.commentsData.status);
@@ -20,7 +22,7 @@ export const Modal = ({id, closeModal}) => {
     const target = e.target;
     const code = e.code;
     if (target === overlayRef.current || code === 'Escape') {
-      closeModal();
+      navigate(`/category/${page}`);
     }
   };
 
@@ -61,18 +63,26 @@ export const Modal = ({id, closeModal}) => {
             <p className={style.author}>{dataPost?.author}</p>
             <FormComment />
             {comments.length !== 0 ? (
-              comments?.map(({data}) => (
-                <Comments
-                  key={data.id}
-                  author={data.author}
-                  comment={data.body}
-                  date={data.created}
-                />
-              ))
+              comments?.map(
+                ({data}) =>
+                  data.body && (
+                    <Comments
+                      key={data.id}
+                      author={data.author}
+                      comment={data.body}
+                      date={data.created}
+                    />
+                  )
+              )
             ) : (
               <Text As="p">Нет коментариев</Text>
             )}
-            <button className={style.close} onClick={closeModal}>
+            <button
+              className={style.close}
+              onClick={() => {
+                navigate(`/category/${page}`);
+              }}
+            >
               <CloseIcon />
             </button>
           </>
@@ -81,9 +91,4 @@ export const Modal = ({id, closeModal}) => {
     </div>,
     document.getElementById('modal-root')
   );
-};
-
-Modal.propTypes = {
-  id: PropTypes.string,
-  closeModal: PropTypes.func,
 };

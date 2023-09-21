@@ -4,3 +4,32 @@
   justify-content: space-around;
   gap: 30px;
 }
+
+.end{
+  display: flex;
+  flex-basis: 100%;
+}
+
+.btn {
+  display: block;
+  margin: 20px auto 0;
+  padding: 10px 20px;
+  border-radius: 8px;
+  outline: none;
+  background-color: var(--orange);
+  color: var(--white);
+  border: 1px solid transparent
+}
+
+.btn:hover {
+  background-color: var(--blue);
+}
+
+.btn:focus {
+  border-color: var(--blue);
+}
+
+.btn:active {
+  background-color: var(--green);
+  border-color: var(--green);
+}

@@ -6,7 +6,7 @@ export const Photo = ({title, thumbnail}) => (
   <img
     className={style.img}
     src={thumbnail}
-    alt={title}
+    alt={title.substr(0, 5)}
     style={{'--path-img': `url(${notphoto})`}}
   />
 );
