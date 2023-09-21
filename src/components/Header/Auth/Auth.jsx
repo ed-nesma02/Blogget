@@ -2,17 +2,25 @@ import style from './Auth.module.css';
 import {ReactComponent as LoginIcon} from './img/login.svg';
 import {urlAuth} from '../../../api/auth';
 import {Text} from '../../../UI/Text/Text';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useAuth} from '../../../hooks/useAuth';
 import {PuffPreloader} from '../../../UI/PuffPreloader/PuffPreloader';
 import {Notification} from '../../Notification/Notification';
+import {useNavigate} from 'react-router-dom';
 
 export const Auth = () => {
   const [logout, setLogout] = useState(false);
   const [auth, status, unAuth] = useAuth();
+  const navigate = useNavigate();
   const changeLogout = () => {
     setLogout(!logout);
   };
+
+  useEffect(() => {
+    if (status === 'loaded') {
+      navigate('/');
+    }
+  }, [status]);
 
   return (
     <div className={style.container}>
