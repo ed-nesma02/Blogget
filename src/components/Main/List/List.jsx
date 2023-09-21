@@ -6,11 +6,13 @@ import Post from './Post';
 import {useDispatch, useSelector} from 'react-redux';
 import {postsDataRequestAsync} from '../../../store/postsData/postsDataAction';
 import {Outlet, useParams} from 'react-router-dom';
+import {Text} from '../../../UI/Text';
 
 export const List = () => {
   const post = useSelector((state) => state.postsData.data);
   const status = useSelector((state) => state.postsData.status);
   const statusAuth = useSelector((state) => state.auth.status);
+  const isLast = useSelector((state) => state.postsData.isLast);
   const endList = useRef(null);
   const dispath = useDispatch();
   const [count, setCount] = useState(0);
@@ -53,11 +55,11 @@ export const List = () => {
       {status === 'loading' && statusAuth !== 'idle' && <ThreeDotsPreloader />}
       {status === 'error' && <p>Ошибка</p>}
       <ul className={style.list}>
-        {(status === 'loaded') &&
+        {status === 'loaded' &&
           post?.map(({data}) => <Post key={data.id} postData={data} />)}
         <li ref={endList} className={style.end} />
       </ul>
-      {(count > 2) && (
+      {count > 2 && !isLast && (
         <button
           onClick={() => {
             setCount(count - 1);
@@ -68,6 +70,11 @@ export const List = () => {
         </button>
       )}
       <Outlet />
+      {isLast && (
+        <Text As="p" size={22} tsize={24} color="orange" center={true}>
+          Постов больше нет
+        </Text>
+      )}
     </>
   );
 };
