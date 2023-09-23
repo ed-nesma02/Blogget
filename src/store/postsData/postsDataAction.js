@@ -1,69 +1,54 @@
 import axios from 'axios';
 import {URL_API} from '../../api/const';
+import {postsDataSlice} from './postsDataSlice';
+import {createAsyncThunk} from '@reduxjs/toolkit';
 
-export const POSTS_DATA_REQUEST = 'POSTS_DATA_REQUEST';
-export const POSTS_DATA_REQUEST_SUCCESS = 'POSTS_DATA_REQUEST_SUCCESS';
-export const POSTS_DATA_REQUEST_ERROR = 'POSTS_DATA_REQUEST_ERROR';
-export const POSTS_DATA_REQUEST_SUCCESS_AFTER =
-  'POSTS_DATA_REQUEST_SUCCESS_AFTER';
-export const CHANGE_PAGE = 'CHANGE_PAGE';
 
-export const postsDataRequest = () => ({
-  type: POSTS_DATA_REQUEST,
-});
+export const postsDataRequestAsync = createAsyncThunk(
+  'postsData/fetch',
+  (newPage, {dispatch, getState}) => {
+    let page = getState().postsData.page;
+    if (newPage) {
+      page = newPage;
+      dispatch(postsDataSlice.actions.changePage({page}));
+    }
+    const token = getState().token.token;
+    const afterPage = getState().postsData.after;
+    const status = getState().postsData.status;
+    const isLast = getState().postsData.isLast;
 
-export const postsDataRequestSuccess = (data) => ({
-  type: POSTS_DATA_REQUEST_SUCCESS,
-  data: data.children,
-  after: data.after,
-});
-
-export const postsDataRequestSuccessAfter = (data) => ({
-  type: POSTS_DATA_REQUEST_SUCCESS_AFTER,
-  data: data.children,
-  after: data.after,
-});
-
-export const postsDataRequestError = (error) => ({
-  type: POSTS_DATA_REQUEST_ERROR,
-  error,
-});
-
-export const changePage = (page) => ({
-  type: CHANGE_PAGE,
-  page,
-});
-
-export const postsDataRequestAsync = (newPage) => (dispath, getState) => {
-  let page = getState().postsData.page;
-  if (newPage) {
-    page = newPage;
-    dispath(changePage(page));
-  }
-  const token = getState().token.token;
-  const after = getState().postsData.after;
-  const status = getState().postsData.status;
-  const isLast = getState().postsData.isLast;
-
-  if (!token || status === 'loading' || isLast) return;
-  if (!after) {
-    dispath(postsDataRequest());
-  }
-
-  axios(`${URL_API}/${page}?limit=10&${after ? `after=${after}` : ''}`, {
-    headers: {
-      Authorization: `bearer ${token}`,
-    },
-  })
-    .then(({data: {data}}) => {
-      if (after) {
-        dispath(postsDataRequestSuccessAfter(data));
-      } else {
-        dispath(postsDataRequestSuccess(data));
+    if (!token || status === 'loading' || isLast) return;
+    if (!afterPage) {
+      dispatch(postsDataSlice.actions.postsDataRequest());
+    }
+    axios(
+      `${URL_API}/${page}?limit=10&${afterPage ? `after=${afterPage}` : ''}`,
+      {
+        headers: {
+          Authorization: `bearer ${token}`,
+        },
       }
-    })
-    .catch((err) => {
-      console.error(err);
-      dispath(postsDataRequestError(err));
-    });
-};
+    )
+      .then(
+        ({
+          data: {
+            data: {children: data, after},
+          },
+        }) => {
+          if (afterPage) {
+            dispatch(
+              postsDataSlice.actions.postsDataRequestSuccessAfter({data, after})
+            );
+          } else {
+            dispatch(
+              postsDataSlice.actions.postsDataRequestSuccess({data, after})
+            );
+          }
+        }
+      )
+      .catch((error) => {
+        console.error(error);
+        dispatch(postsDataSlice.actions.postsDataRequestError(error));
+      });
+  }
+);

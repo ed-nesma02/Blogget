@@ -26,6 +26,7 @@ export const tokenMiddleware = (store) => (next) => (action) => {
   }
   next(action);
 };
+
 export const tokenReducer = (state = initialState, action) => {
   switch (action.type) {
     case UPDATE_TOKEN:

@@ -24,7 +24,6 @@ export const List = () => {
   }, [page]);
 
   useEffect(() => {
-    console.log(count);
     if (count > 2) return;
     const observer = new IntersectionObserver(
       (entries) => {
