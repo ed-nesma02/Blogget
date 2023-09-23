@@ -14,14 +14,12 @@ export const postsDataRequestAsync = createAsyncThunk(
     }
     const token = getState().token.token;
     const afterPage = getState().postsData.after;
-    const status = getState().postsData.status;
+    // const status = getState().postsData.status;
     const isLast = getState().postsData.isLast;
 
-    if (!token || status === 'loading' || isLast) return;
-    if (!afterPage) {
-      dispatch(postsDataSlice.actions.postsDataRequest());
-    }
-    axios(
+    if (!token || isLast) return;
+
+    return axios(
       `${URL_API}/${page}?limit=10&${afterPage ? `after=${afterPage}` : ''}`,
       {
         headers: {
@@ -48,7 +46,7 @@ export const postsDataRequestAsync = createAsyncThunk(
       )
       .catch((error) => {
         console.error(error);
-        dispatch(postsDataSlice.actions.postsDataRequestError(error));
+        return (error);
       });
   }
 );

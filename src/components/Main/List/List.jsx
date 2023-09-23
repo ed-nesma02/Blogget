@@ -13,6 +13,7 @@ export const List = () => {
   const status = useSelector((state) => state.postsData.status);
   const statusAuth = useSelector((state) => state.auth.status);
   const isLast = useSelector((state) => state.postsData.isLast);
+  const afterPage = useSelector((state) => state.postsData.after);
   const endList = useRef(null);
   const dispath = useDispatch();
   const [count, setCount] = useState(0);
@@ -51,11 +52,17 @@ export const List = () => {
 
   return (
     <>
-      {status === 'loading' && statusAuth !== 'idle' && <ThreeDotsPreloader />}
+      {status === 'loading' &&
+        statusAuth !== 'idle' &&
+        !afterPage &&
+        !isLast && <ThreeDotsPreloader />}
       {status === 'error' && <p>Ошибка</p>}
       <ul className={style.list}>
-        {status === 'loaded' &&
-          post?.map(({data}) => <Post key={data.id} postData={data} />)}
+        {(status === 'loading' &&
+        statusAuth !== 'idle' &&
+        !afterPage &&
+        !isLast) ? '' : ((status === 'loaded' || afterPage || post.length) &&
+          post?.map(({data}) => <Post key={data.id} postData={data} />))}
         <li ref={endList} className={style.end} />
       </ul>
       {count > 2 && !isLast && (
