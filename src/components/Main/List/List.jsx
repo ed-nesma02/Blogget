@@ -28,7 +28,7 @@ export const List = () => {
     if (count > 2) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
+        if (entries[0].isIntersecting && status !== 'loading') {
           dispath(postsDataRequestAsync());
         }
       },
@@ -42,7 +42,7 @@ export const List = () => {
         observer.unobserve(endList.current);
       }
     };
-  }, [endList.current, count]);
+  }, [endList.current, count, status]);
 
   useEffect(() => {
     if (status === 'loaded') {
@@ -58,11 +58,11 @@ export const List = () => {
         !isLast && <ThreeDotsPreloader />}
       {status === 'error' && <p>Ошибка</p>}
       <ul className={style.list}>
-        {(status === 'loading' &&
-        statusAuth !== 'idle' &&
-        !afterPage &&
-        !isLast) ? '' : ((status === 'loaded' || afterPage || post.length) &&
-          post?.map(({data}) => <Post key={data.id} postData={data} />))}
+        {status === 'loading' && statusAuth !== 'idle' && !afterPage &&
+        !isLast ?
+        '' :
+        (status === 'loaded' || afterPage || post.length) &&
+            post?.map(({data}) => <Post key={data.id} postData={data} />)}
         <li ref={endList} className={style.end} />
       </ul>
       {count > 2 && !isLast && (

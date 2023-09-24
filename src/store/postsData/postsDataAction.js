@@ -3,7 +3,6 @@ import {URL_API} from '../../api/const';
 import {postsDataSlice} from './postsDataSlice';
 import {createAsyncThunk} from '@reduxjs/toolkit';
 
-
 export const postsDataRequestAsync = createAsyncThunk(
   'postsData/fetch',
   (newPage, {dispatch, getState}) => {
@@ -14,7 +13,6 @@ export const postsDataRequestAsync = createAsyncThunk(
     }
     const token = getState().token.token;
     const afterPage = getState().postsData.after;
-    // const status = getState().postsData.status;
     const isLast = getState().postsData.isLast;
 
     if (!token || isLast) return;
@@ -32,21 +30,11 @@ export const postsDataRequestAsync = createAsyncThunk(
           data: {
             data: {children: data, after},
           },
-        }) => {
-          if (afterPage) {
-            dispatch(
-              postsDataSlice.actions.postsDataRequestSuccessAfter({data, after})
-            );
-          } else {
-            dispatch(
-              postsDataSlice.actions.postsDataRequestSuccess({data, after})
-            );
-          }
-        }
+        }) => ({data, after})
       )
       .catch((error) => {
         console.error(error);
-        return (error);
+        return error;
       });
   }
 );
