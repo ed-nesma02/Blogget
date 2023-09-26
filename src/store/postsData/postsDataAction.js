@@ -10,15 +10,19 @@ export const postsDataRequestAsync = createAsyncThunk(
     if (newPage) {
       page = newPage;
       dispatch(postsDataSlice.actions.changePage({page}));
+      return;
     }
     const token = getState().token.token;
     const afterPage = getState().postsData.after;
     const isLast = getState().postsData.isLast;
+    const search = getState().postsData.search;
 
     if (!token || isLast) return;
 
     return axios(
-      `${URL_API}/${page}?limit=10&${afterPage ? `after=${afterPage}` : ''}`,
+      `${URL_API}/${page}?limit=10${search ? `&q=${search}` : ''}${
+        afterPage ? `&after=${afterPage}` : ''
+      }`,
       {
         headers: {
           Authorization: `bearer ${token}`,
@@ -30,7 +34,17 @@ export const postsDataRequestAsync = createAsyncThunk(
           data: {
             data: {children: data, after},
           },
-        }) => ({data, after})
+        }) => {
+          if (afterPage) {
+            dispatch(
+              postsDataSlice.actions.postsDataRequestSuccessAfter({data, after})
+            );
+          } else {
+            dispatch(
+              postsDataSlice.actions.postsDataRequestSuccess({data, after})
+            );
+          }
+        }
       )
       .catch((error) => {
         console.error(error);

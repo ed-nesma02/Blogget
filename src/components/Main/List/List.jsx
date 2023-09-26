@@ -28,7 +28,7 @@ export const List = () => {
     if (count > 2) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && status !== 'loading') {
+        if (entries[0].isIntersecting) {
           dispath(postsDataRequestAsync());
         }
       },
@@ -42,7 +42,7 @@ export const List = () => {
         observer.unobserve(endList.current);
       }
     };
-  }, [endList.current, count, status]);
+  }, [endList.current, count]);
 
   useEffect(() => {
     if (status === 'loaded') {
@@ -59,9 +59,8 @@ export const List = () => {
       {status === 'error' && <p>Ошибка</p>}
       <ul className={style.list}>
         {status === 'loading' && statusAuth !== 'idle' && !afterPage &&
-        !isLast ?
-        '' :
-        (status === 'loaded' || afterPage || post.length) &&
+         !isLast ? '' :
+         (status === 'loaded' || afterPage || post.length) &&
             post?.map(({data}) => <Post key={data.id} postData={data} />)}
         <li ref={endList} className={style.end} />
       </ul>
