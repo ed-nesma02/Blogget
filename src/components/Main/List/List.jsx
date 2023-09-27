@@ -60,7 +60,7 @@ export const List = () => {
       <ul className={style.list}>
         {status === 'loading' && statusAuth !== 'idle' && !afterPage &&
          !isLast ? '' :
-         (status === 'loaded' || afterPage || post.length) &&
+         (status === 'loaded' || afterPage || typeof post.length) &&
             post?.map(({data}) => <Post key={data.id} postData={data} />)}
         <li ref={endList} className={style.end} />
       </ul>
