@@ -4,7 +4,7 @@ import {authReducer} from './auth/authReducer';
 import postsDataReducer from './postsData/postsDataSlice';
 import commentsDataReducer from './commentsData/commentsDataSlice';
 import {configureStore} from '@reduxjs/toolkit';
-import createSagaMiddleware from '@redux-saga';
+import createSagaMiddleware from 'redux-saga';
 import rootSaga from './saga';
 
 export const sagaMiddleware = createSagaMiddleware();
